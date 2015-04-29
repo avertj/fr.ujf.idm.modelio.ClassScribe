@@ -9,7 +9,7 @@ Groupe 235
 * Julien AVERT (JAT)
 * Mohammed MENBER (MMR)
 
-# Ce qui fonctionne
+# Travail effectué
 
 ## Export
 

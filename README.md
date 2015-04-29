@@ -63,18 +63,8 @@ ClassA
 ```
 ## Import
 
-Pour l'instant aucun import n'est possible
+Pour l'instant l'import est très limité et codé avec les pieds
 
-Le dialogue de selection de fichier s'ouvre et il est possible de choisir un fichier mais cliquer sur ok provoquera une erreur que je n'ai pas su résoudre
+il est possible d'importer des enums, des classes (abstraites ou non), des attributs et leur visibilité / cardinalité et des operations (sans type de retour ni paramètres)
 
-```
-TypeError: self invalid - must be a Java subclass [self=<TextualTree object at 0x1d>] in <script> at line number 90
-Traceback (most recent call last):
-  File "<script>", line 90, in <module>
-  File "<script>", line 16, in import_tree
-  File "<script>", line 298, in getTextualTree
-  File "<script>", line 165, in __init__
-TypeError: self invalid - must be a Java subclass [self=<TextualTree object at 0x1d>]
-```
-
-Nous avions commencé l'import (enums dans un premier temps) et il fonctionnait correctement mais cette erreur s'est déclarée du jour au lendemain sans raison apparente (nous n'avions touché à aucun code evoqué dans l'erreur) et sans que nous puissions la résoudre (malgré de longues heures de recherche)...
+Les roles ne sont malheureusement pas encore implémentés

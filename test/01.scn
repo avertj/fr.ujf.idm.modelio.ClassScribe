@@ -13,6 +13,9 @@ ClassB
 ClassC
     + theA : ClassA [0..1] inv theC 
     + classC : ClassC [0..1]
+    # test : i [*]
+    ~ lol : d [2]
+    riendutout
 
 ClassD
     + attEnumeration : EnumerationE
@@ -23,7 +26,7 @@ ClassZ
     D: usually short (typically a one or very few sentences), the description can be a
     D: longer piece of text. By contrast to "rich notes" that are supported by Modelio,
     D: "standard" notes can only contains text with no formatting.
-    + a : string 
+    - a : string [0..1]
     + op()
         p1 : string
         p2 : string

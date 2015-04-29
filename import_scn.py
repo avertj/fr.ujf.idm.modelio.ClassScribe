@@ -1,6 +1,9 @@
+import re
+
+model = modelingSession.getModel()
 
 def select_scn_file():
-    from org.eclipse.swt.widgets import FileDialog, Shell
+    from org.eclipse.swt.widgets import Display, FileDialog, Shell
     from org.eclipse.swt import SWT
 
     display = Display.getDefault().getActiveShell()
@@ -38,14 +41,38 @@ def add_comments(elem, children):
 def ignore_line(line):
     return line.split()[0] in ['D:', 'S:', 'd:', 's:']
 
+def is_role(line):
+    split = line.replace(' ', '').split(':')
+    try:
+        if split[1].split('[')[0] in basicTypes: return False
+    except:
+        return False
+    return True
+
+def is_attribute(line):
+    return not is_operation(line) and not is_role(line)
+
+def is_operation(line):
+    return '()' in line
+
+basicTypes = ['string', 's', 'integer', 'i', 'float', 'f', 'boolean', 'b', 'date', 'd']
+types = {'s': model.getUmlTypes().getSTRING(),
+         'i': model.getUmlTypes().getINTEGER(),
+         'f': model.getUmlTypes().getFLOAT(),
+         'b': model.getUmlTypes().getBOOLEAN(),
+         'd': model.getUmlTypes().getDATE()}
+visi = {'+': VisibilityMode.PUBLIC,
+        '-': VisibilityMode.PRIVATE,
+        '#': VisibilityMode.PROTECTED,
+        '~': VisibilityMode.PACKAGEVISIBILITY}
+rkind = {'<#>': AggregationKind.KINDISCOMPOSITION,
+         '<>': AggregationKind.KINDISAGGREGATION}
+
 def create_class(node, pkg):
     trans = modelingSession.createTransaction("Class creation") 
     try:
         name = node.getHeadline()
-        model = modelingSession.getModel()
-        abstract = False
-        if name.split()[0] in ['a', 'abstract']:
-            abstract = True
+        abstract = name.split()[0] in ['a', 'abstract']
         if abstract:
             cla = model.createClass(name.split()[1], pkg)
             cla.setIsAbstract(abstract)
@@ -55,8 +82,57 @@ def create_class(node, pkg):
         add_comments(cla, node.getChildren())
 
         for c in node.getChildren():
-            if not ignore_line(c.getHeadline()):
-                pass
+            line = c.getHeadline()
+            if not ignore_line(line):
+                if is_attribute(line):
+                    line = line.replace(' ', '') # on vire les espaces
+                    att = model.createAttribute()
+                    att.setOwner(cla)
+                    if line[0] is '/':
+                        att.setIsDerived(True)
+                        line = line[1:]
+                    visibility = visi[line[:1]] if line[:1] in visi.keys() else visi['+']
+                    att.setVisibility(visibility)
+                    for v in visi.keys(): line = line.replace(v, '') # on vire la visibilité
+                    name = line.split(':')
+                    att.setName(name[0])
+                    try:
+                        typeregex = r'^(\w*)(\[.*\])?$'
+                        typematch = re.match(typeregex, name[1])
+                        if typematch:
+                            if typematch.group(1): # on a un type
+                                att.setType(types[typematch.group(1)[0]])
+                            if typematch.group(2): # on a une carinalité
+                                card = typematch.group(2)
+                                cardregex = r'^\[(.*?)(?:\.\.(.*?))?\]$'
+                                cardmatch = re.match(cardregex, card)
+                                if cardmatch:
+                                    mini = cardmatch.group(1)
+                                    maxi = cardmatch.group(2)
+                                    if not maxi:
+                                        maxi = mini
+                                    att.setMultiplicityMin(mini)
+                                    att.setMultiplicityMax(maxi)
+                    except:
+                        pass
+                elif is_operation(line):
+                    op = model.createOperation()
+                    op.setOwner(cla)
+                    abstract = line.split()[0] in ['a', 'abstract']
+                    line = line.replace(' ', '') # on vire les espaces
+                    if abstract:
+                        op.setIsAbstract(abstract)
+                        line = line.split(num=1)[1]
+                    if line[0] is '/':
+                        op.setIsDerived(True)
+                        line = line[1:]
+                    visibility = visi[line[:1]] if line[:1] in visi.keys() else visi['+']
+                    op.setVisibility(visibility)
+                    name = line.split('()')
+                    op.setName(name[0])
+                    pass
+                elif is_role(line):
+                    pass
         trans.commit()
     except:
         trans.rollback()
@@ -66,7 +142,6 @@ def create_enum(node, pkg):
     trans = modelingSession.createTransaction("Enum creation") 
     try:
         name = node.getHeadline()
-        model = modelingSession.getModel()
         enum = model.createEnumeration(name.split()[1], pkg)
 
         add_comments(enum, node.getChildren())
@@ -78,20 +153,6 @@ def create_enum(node, pkg):
     except:
         trans.rollback()
         raise
-
-if len(selectedElements) == 1:
-    elem=selectedElements[0]
-
-    if not isinstance(elem, Package):
-        print 'Please select a package first, aborting.'
-    else :
-        scn_file = select_scn_file()
-        if scn_file:
-            import_tree(scn_file, elem)
-        else:
-            print 'No file selected, aborting.'
-else:
-    print 'Please select only one package, aborting.'
 
 #----------------------------------------------------------------------------
 # textual_tree
@@ -301,3 +362,18 @@ class TextualTreeReader(object):
         for (comment, indent, headline) in lines:
             tree.addLine(-1, indent, comment, headline)
         return tree
+
+
+if len(selectedElements) == 1:
+    elem=selectedElements[0]
+
+    if not isinstance(elem, Package):
+        print 'Please select a package first, aborting.'
+    else :
+        scn_file = select_scn_file()
+        if scn_file:
+            import_tree(scn_file, elem)
+        else:
+            print 'No file selected, aborting.'
+else:
+    print 'Please select only one package, aborting.'

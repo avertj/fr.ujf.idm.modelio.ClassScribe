@@ -1,6 +1,6 @@
 
 def select_scn_file():
-    from org.eclipse.swt.widgets import FileDialog, Shell
+    from org.eclipse.swt.widgets import Display, FileDialog, Shell
     from org.eclipse.swt import SWT
 
     display = Display.getDefault().getActiveShell()

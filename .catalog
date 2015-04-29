@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<catalog>
+	<script name="Export SCN" path="export_scn.py" icon-path="" show-menu="true" show-toolbar="true">
+		<description> </description>
+	</script>
+	<script name="Import SCN" path="import_scn.py" icon-path="" show-menu="true" show-toolbar="true">
+		<description> </description>
+	</script>
+</catalog>

@@ -1,0 +1,29 @@
+e EnumerationE
+    el1
+    el2
+    el3
+
+ClassA < ClassD
+    + someBs : ClassB [*] inv someAs [*]
+    + theC : ClassC  inv theA [0..1]
+
+ClassB
+    + someAs : ClassA [*] inv someBs [*]
+
+ClassC
+    + theA : ClassA [0..1] inv theC 
+    + classC : ClassC [0..1]
+
+ClassD
+    + attEnumeration : EnumerationE
+
+ClassZ
+    S: The ClassA is just a fake Class.
+    D: This is the description of the ClassA. By contrast to the summary, which is
+    D: usually short (typically a one or very few sentences), the description can be a
+    D: longer piece of text. By contrast to "rich notes" that are supported by Modelio,
+    D: "standard" notes can only contains text with no formatting.
+    + a : string 
+    + op()
+        p1 : string
+        p2 : string

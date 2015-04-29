@@ -1,0 +1,18 @@
+e EnumerationE
+    el1
+    el2
+    el3
+
+ClassA < ClassD
+    + someBs : ClassB [*] inv someAs [*]
+    + theC : ClassC  inv theA [0..1]
+
+ClassB
+    + someAs : ClassA [*] inv someBs [*]
+
+ClassC
+    + theA : ClassA [0..1] inv theC 
+    + classC : ClassC [0..1]
+
+ClassD
+    + attEnumeration : EnumerationE

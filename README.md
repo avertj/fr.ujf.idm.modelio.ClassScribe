@@ -9,7 +9,7 @@ Groupe 235
 * Julien AVERT (JAT)
 * Mohammed MENBER (MMR)
 
-# Ce qui fonctionne
+# Travail effectué
 
 ## Export
 
@@ -66,5 +66,3 @@ ClassA
 Pour l'instant l'import est très limité et codé avec les pieds
 
 il est possible d'importer des enums, des classes (abstraites ou non), des attributs et leur visibilité / cardinalité et des operations (sans type de retour ni paramètres)
-
-Les roles ne sont malheureusement pas encore implémentés

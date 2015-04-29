@@ -9,6 +9,10 @@ Groupe 235
 * Julien AVERT (JAT)
 * Mohammed MENBER (MMR)
 
+# Utilisation
+
+Selectionnez un package dans modelio pui cliquez sur Import SCN ou Export SCN
+
 # Travail effectué
 
 ## Export
@@ -66,3 +70,7 @@ ClassA
 Pour l'instant l'import est très limité et codé avec les pieds
 
 il est possible d'importer des enums, des classes (abstraites ou non), des attributs et leur visibilité / cardinalité et des operations (sans type de retour ni paramètres)
+
+les associations et liens d'heritage ne sont pas générées
+
+Attention, pour l'instant l'import est très primitif et ne prends pas en compte les classes déjà existantes dans le package
